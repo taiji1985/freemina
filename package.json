@@ -1,0 +1,55 @@
+{
+  "name": "freemina",
+  "version": "1.0.0",
+  "description": "A free MINA compatible framework for running in browser or webview. mina is the framework of wechat app.一个微信小程序框架的兼容框架，可以运行于浏览器和webview中。后期会支持将自己的App打包成android等平台应用 ",
+  "main": "dist/freemina.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taiji1985/freemina.git"
+  },
+  "keywords": ["MINA","微信小程序"],
+  "author": "Tongfeng Yang <ytf_003@126.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/taiji1985/freemina/issues"
+  },
+  "homepage": "https://github.com/taiji1985/freemina#readme",
+  "devDependencies": {
+    "babel-core": "6.14.0",
+    "babel-eslint": "^7.0.0",
+    "babel-loader": "6.2.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-polyfill": "6.13.0",
+    "babel-preset-latest": "6.14.0",
+    "babel-register": "6.14.0",
+    "chai": "3.5.0",
+    "del": "2.2.2",
+    "glob": "7.0.6",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "3.0.1",
+    "gulp-filter": "4.0.0",
+    "gulp-istanbul": "1.1.1",
+    "gulp-livereload": "3.8.1",
+    "gulp-load-plugins": "1.2.4",
+    "gulp-mocha": "3.0.1",
+    "gulp-plumber": "1.1.0",
+    "gulp-rename": "1.2.2",
+    "gulp-sourcemaps": "1.6.0",
+    "gulp-uglify": "2.0.0",
+    "isparta": "4.0.0",
+    "jsdom": "^9.5.0",
+    "json-loader": "0.5.4",
+    "mocha": "3.0.2",
+    "sinon": "1.17.5",
+    "sinon-chai": "2.8.0",
+    "webpack": "1.13.2",
+    "webpack-stream": "3.2.0"
+  },
+  "babelBoilerplateOptions": {
+    "entryFileName": "freemina.js",
+    "mainVarName": "freemina"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "pages":[
+    "pages/dtest/test",
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/qtest/qtest_type",
+    "pages/question/question",
+    "pages/qtest/ktest_list",
+    "pages/view/view",
+    "pages/qtest/ktest_type"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "考试霸王",
+    "navigationBarTextStyle":"black"
+  },
+  "debug": false
+}
