@@ -13,6 +13,9 @@ WebPatch，ES2015等等一系列我原本不熟悉的内容。
 
 总之，再次感谢 @phodal 。
 
+FreeMina项目地址 https://github.com/taiji1985/freemina
+
+
 ##设计目的和计划
 
 完全兼容微信小程序的所有API。让微信小程序能移植到自己的APP上。
