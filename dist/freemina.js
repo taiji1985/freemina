@@ -56,17 +56,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	    if (true) {
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(3), __webpack_require__(4)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(1), __webpack_require__(3), __webpack_require__(4), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof exports !== "undefined") {
-	        factory(module, exports, require('./Page'), require('./App'), require('./FException'));
+	        factory(module, exports, require('./Page'), require('./App'), require('./FException'), require('./FM'));
 	    } else {
 	        var mod = {
 	            exports: {}
 	        };
-	        factory(mod, mod.exports, global.Page, global.App, global.FException);
+	        factory(mod, mod.exports, global.Page, global.App, global.FException, global.FM);
 	        global.freemina = mod.exports;
 	    }
-	})(this, function (module, exports, _Page, _App, _FException) {
+	})(this, function (module, exports, _Page, _App, _FException, _FM) {
 	    'use strict';
 
 	    Object.defineProperty(exports, "__esModule", {
@@ -79,12 +79,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _FException2 = _interopRequireDefault(_FException);
 
+	    var _FM2 = _interopRequireDefault(_FM);
+
 	    function _interopRequireDefault(obj) {
 	        return obj && obj.__esModule ? obj : {
 	            default: obj
 	        };
 	    }
 
+	    /**
+	     * Created by Tongfeng Yang on 2017/1/25.
+	     */
 	    var freemina = {
 	        addPage: function addPage(opt, name, wxml) {
 	            console.log("add Page :" + name);
@@ -93,25 +98,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	            var p = new _Page2.default(opt, name);
 	            p.setWXml(wxml);
-	            window.App.addPage(name, p);
+	            window._app.addPage(name, p);
 	        },
 	        setApp: function setApp(opt) {
 	            console.log("set App called");
-	            window.App = new _App2.default(opt);
+	            window._app = new _App2.default(opt);
 	        },
 	        start: function start() {
 	            window.Page = this.addPage;
 	            window.App = this.setApp;
-	            var e = new CustomEvent('onLaunch', {});
+	            window.wx = new _FM2.default();
+	            // $('#app *').click(function () {
+	            //     console.log("haha....");
+	            //     console.log($(this).html());
+	            //
+	            // })
+	            //        let e = new CustomEvent('onLaunch',{});
 	            //        window.App.eventHandler(e)
 	        },
 	        finishLoad: function finishLoad() {
 	            var e = { type: "onLaunch", detail: {} };
-	            window.App.eventHandler(e);
+	            window._app.eventHandler(e);
 	        }
-	    }; /**
-	        * Created by Tongfeng Yang on 2017/1/25.
-	        */
+	    };
+
 	    exports.default = freemina;
 	    module.exports = exports['default'];
 	});
@@ -178,6 +188,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _classCallCheck(this, Page);
 
 	            this.opt = opt;
+	            console.log("set opt ============================");
+	            console.log(this.opt);
 
 	            for (var op in opt) {
 	                if ('data' === op) {
@@ -209,7 +221,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                for (var e in event_list) {
 	                    var ename = event_list[e];
 	                    console.log("removeEventListener:" + this.name + '_' + ename);
-	                    document.removeEventListener(this.name + '_' + ename);
+	                    //document.removeEventListener(this.name+'_'+ename);
 	                }
 	            }
 	        }, {
@@ -256,11 +268,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            key: 'render',
 	            value: function render() {
 	                console.log("render called");
+	                console.log(this.opt);
 	                var template = this.wxml;
 	                var parser = new _WXmlParser2.default(this.getData());
 	                var domJson = parser.stringToDomJSON(template)[0];
-	                var dom = parser.jsonToDom(domJson);
-	                document.getElementById('app').appendChild(dom);
+	                var dom = parser.jsonToDom(domJson, this.opt);
+	                var elem = document.getElementById('app');
+	                while (elem.hasChildNodes()) //当elem下还存在子节点时 循环继续
+	                {
+	                    elem.removeChild(elem.firstChild);
+	                }
+	                elem.appendChild(dom);
 	                this.fireEvent('onShow'); //for App object
 	            }
 	        }, {
@@ -397,7 +415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    nodeType: node.nodeType
 	                };
 	                if (node.tagName) {
-	                    obj.tagName = 'winv-' + node.tagName.toLowerCase();
+	                    obj.tagName = 'fm-' + node.tagName.toLowerCase();
 	                } else if (node.nodeName) {
 	                    obj.nodeName = node.nodeName;
 	                }
@@ -428,13 +446,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	        }, {
 	            key: 'jsonToDom',
-	            value: function jsonToDom(obj) {
+	            value: function jsonToDom(obj, opt) {
+	                //console.log("jsonToDom");
+	                //console.log(opt);
+	                window.haha = opt;
 	                // Code base on https://gist.github.com/sstur/7379870
 	                if (typeof obj == 'string') {
 	                    obj = JSON.parse(obj);
 	                }
 	                var node,
 	                    nodeType = obj.nodeType;
+	                //console.log("jsonToDom nodeType = "+ nodeType);
 	                switch (nodeType) {
 	                    case 1:
 	                        //ELEMENT_NODE
@@ -443,6 +465,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                        for (var i = 0, len = attributes.length; i < len; i++) {
 	                            var attr = attributes[i];
 	                            node.setAttribute(attr[0], attr[1]);
+	                            //console.log('set attr '+ attr[0]+ "->"+attr[1]);
+	                            if (attr[0].startsWith("bind")) {
+	                                var e = attr[0].replace("bind", "");
+	                                if (e == "tap") {
+	                                    //console.log(opt);
+	                                    node.addEventListener("click", opt[attr[1]]);
+	                                }
+	                            }
 	                        }
 	                        break;
 	                    case 3:
@@ -471,7 +501,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                if (nodeType == 1 || nodeType == 11) {
 	                    var childNodes = obj.childNodes || [];
 	                    for (i = 0, len = childNodes.length; i < len; i++) {
-	                        node.appendChild(this.jsonToDom(childNodes[i]));
+	                        node.appendChild(this.jsonToDom(childNodes[i], opt));
 	                    }
 	                }
 	                return node;
@@ -544,7 +574,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            this.opt = opt;
 	            this.pageMap = [];
-
+	            this.pageMap.len = 0;
 	            this.addPage = this.addPage.bind(this);
 	            this.eventHandler = this.eventHandler.bind(this);
 	            this.render = this.render.bind(this);
@@ -563,12 +593,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, {
 	            key: "addPage",
 	            value: function addPage(name, p) {
-	                if (this.pageMap.length == 0) {
+	                console.log("page map len is " + this.pageMap.length);
+	                if (this.pageMap.len == 0) {
 	                    this.curPage = p;
 	                }
 	                p.setName(name);
 
 	                this.pageMap[name] = p;
+	                this.pageMap.len++;
+	                console.log(this.pageMap);
+	            }
+	        }, {
+	            key: "jumpTo",
+	            value: function jumpTo(pagePath) {
+	                var p = this.pageMap[pagePath];
+	                if (p) {
+	                    this.curPage = p;
+	                    return true;
+	                }
+
+	                return false;
 	            }
 	        }, {
 	            key: "eventHandler",
@@ -587,7 +631,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            key: "render",
 	            value: function render() {
 	                if (this.curPage) {
-	                    curPage.render();
+	                    this.curPage.render();
 	                }
 	            }
 	        }]);
@@ -635,6 +679,102 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    exports.default = FreeMinaException;
+	    module.exports = exports["default"];
+	});
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	    if (true) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof exports !== "undefined") {
+	        factory(module, exports);
+	    } else {
+	        var mod = {
+	            exports: {}
+	        };
+	        factory(mod, mod.exports);
+	        global.FM = mod.exports;
+	    }
+	})(this, function (module, exports) {
+	    "use strict";
+
+	    Object.defineProperty(exports, "__esModule", {
+	        value: true
+	    });
+
+	    function _classCallCheck(instance, Constructor) {
+	        if (!(instance instanceof Constructor)) {
+	            throw new TypeError("Cannot call a class as a function");
+	        }
+	    }
+
+	    var _createClass = function () {
+	        function defineProperties(target, props) {
+	            for (var i = 0; i < props.length; i++) {
+	                var descriptor = props[i];
+	                descriptor.enumerable = descriptor.enumerable || false;
+	                descriptor.configurable = true;
+	                if ("value" in descriptor) descriptor.writable = true;
+	                Object.defineProperty(target, descriptor.key, descriptor);
+	            }
+	        }
+
+	        return function (Constructor, protoProps, staticProps) {
+	            if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	            if (staticProps) defineProperties(Constructor, staticProps);
+	            return Constructor;
+	        };
+	    }();
+
+	    var FM = function () {
+	        function FM() {
+	            _classCallCheck(this, FM);
+
+	            //this.app = app;
+	            this.navigateTo = this.navigateTo.bind(this);
+	            this._callIfNotNull = this._callIfNotNull.bind(this);
+	            this.pageStack = [];
+	            this.navigateTo = this.navigateTo.bind(this);
+	            this._callIfNotNull = this._callIfNotNull.bind(this);
+	        }
+
+	        _createClass(FM, [{
+	            key: "navigateTo",
+	            value: function navigateTo(args) {
+	                this.app = window._app;
+	                console.log("navigateTo ");
+	                console.log(window._app);
+	                if (!args.url) {
+	                    this._callIfNotNull(args.fail);
+	                } else {
+	                    this.pageStack.push(this.app.curPage);
+	                    var r = this.app.jumpTo(args.url);
+	                    console.log('jump ret ' + r);
+	                    if (r) {
+	                        this.app.render();
+	                        this._callIfNotNull(args.success);
+	                    } else {
+	                        this._callIfNotNull(args.fail);
+	                    }
+	                }
+	                this._callIfNotNull(args.complete);
+	            }
+	        }, {
+	            key: "_callIfNotNull",
+	            value: function _callIfNotNull(fun) {
+	                if (fun) {
+	                    fun();
+	                }
+	            }
+	        }]);
+
+	        return FM;
+	    }();
+
+	    exports.default = FM;
 	    module.exports = exports["default"];
 	});
 

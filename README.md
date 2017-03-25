@@ -49,9 +49,82 @@ json的处理相对简单，require进去就好。
 ##实现方案
 ###项目工具
 整个项目使用nodejs管理。使用gulp完成编译和监视文件自动编译的功能。
-使用bable进行ES6的转义。 直接拿了别人项目的配置。。。（羞。。。）
+使用bable进行ES6的转义。 
 详见package.json
 
+###编译方法
+先执行npm install 安装相关的包
+修改源码后执行gulp build
+如果想在源文件被编辑后自动重新编译，执行gulp watch
+###测试方法
+打开index.html即可
+
+###微信小程序放哪里？
+目前项目还很不完善， 你可以查看test.js中内容，并对其进行修改。
+这个test.js中博包含两个页面，默认显示第一个，点击后显示第二个。
+```js
+App({
+    data: {
+        word:'helo'
+    },
+    hello(){
+        console.log('sss');
+    },
+    onLaunch:function(){
+        this.hello();
+    }
+});
+
+//--------
+var wxml = '<view class="container"  bindtap="haha"><text class="item">{{first}}</text><text>{{obj.name}}</text></view>';
+
+Page({
+
+    data: {
+        first: 'hello, world',
+        obj:{
+            name:'yang',
+            age:13
+        }
+    },
+    onLoad:function(){
+        console.log('page loaded');
+    },
+
+    onShow: function () {
+
+    },
+    haha: function () {
+        console.log('tap event ....');
+        wx.navigateTo({
+            url: 'index2'
+        })
+    }
+
+},'index',wxml)
+
+//-------- 第二个页面
+var wxml_2 = '<view class="container"><text class="item">{{first}}</text><text>{{obj.name}}</text></view>';
+
+Page({
+
+    data: {
+        first: 'sssss',
+        obj:{
+            name:'yang',
+            age:13
+        }
+    },
+    onLoad:function(){
+        console.log('page loaded');
+    },
+
+    onShow: function () {
+
+    },
+
+},'index2',wxml_2)
+```
 ###项目入口
 项目的入口是src/freemina.js
 ```js

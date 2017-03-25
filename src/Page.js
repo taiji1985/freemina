@@ -9,7 +9,8 @@ const event_list = [
 export default class Page{
     constructor(opt){
         this.opt = opt;
-
+        console.log("set opt ============================");
+        console.log(this.opt);
 
         for (var op in opt) {
             if ('data' === op) {
@@ -38,7 +39,7 @@ export default class Page{
         for(var e in event_list ){
             let ename = event_list[e];
             console.log("removeEventListener:"+this.name+'_'+ename);
-            document.removeEventListener(this.name+'_'+ename);
+            //document.removeEventListener(this.name+'_'+ename);
         }
     }
 
@@ -80,11 +81,17 @@ export default class Page{
 
     render(){
         console.log("render called");
+        console.log(this.opt);
         let template = this.wxml;
         let parser =new WXmlParser(this.getData());
         let domJson = parser.stringToDomJSON(template)[0];
-        let dom = parser.jsonToDom(domJson);
-        document.getElementById('app').appendChild(dom);
+        let dom = parser.jsonToDom(domJson,this.opt);
+        let elem = document.getElementById('app');
+        while(elem.hasChildNodes()) //当elem下还存在子节点时 循环继续
+        {
+            elem.removeChild(elem.firstChild);
+        }
+        elem.appendChild(dom);
         this.fireEvent('onShow');//for App object
     }
     fireMyEvent(type){
@@ -97,5 +104,6 @@ export default class Page{
         console.log("fireEvent "+type);
         document.dispatchEvent(new CustomEvent(type,{}));
     }
+
 
 }

@@ -4,6 +4,7 @@
 import Page from './Page'
 import App from './App'
 import FException from './FException'
+import FM from './FM'
 
 const freemina={
     addPage(opt,name,wxml){
@@ -13,23 +14,30 @@ const freemina={
         }
         let p = new Page(opt,name);
         p.setWXml(wxml);
-        window.App.addPage(name,p);
+        window._app.addPage(name,p);
     },
 
     setApp(opt){
         console.log("set App called");
-        window.App = new App(opt);
+        window._app = new App(opt);
+
     },
 
     start(){
         window.Page  = this.addPage;
         window.App = this.setApp;
+        window.wx = new FM();
+        // $('#app *').click(function () {
+        //     console.log("haha....");
+        //     console.log($(this).html());
+        //
+        // })
 //        let e = new CustomEvent('onLaunch',{});
 //        window.App.eventHandler(e)
     },
     finishLoad(){
         var e={type:"onLaunch",detail:{}};
-        window.App.eventHandler(e);
+        window._app.eventHandler(e);
     }
 
 }

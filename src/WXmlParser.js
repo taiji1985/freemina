@@ -50,7 +50,7 @@ export default class WXmlParser{
             nodeType: node.nodeType
         };
         if (node.tagName) {
-            obj.tagName = 'winv-' + node.tagName.toLowerCase();
+            obj.tagName = 'fm-' + node.tagName.toLowerCase();
         } else if (node.nodeName) {
             obj.nodeName = node.nodeName;
         }
@@ -80,13 +80,17 @@ export default class WXmlParser{
         return obj;
     }
 
-    jsonToDom(obj)
+    jsonToDom(obj,opt)
     {
+        //console.log("jsonToDom");
+        //console.log(opt);
+        window.haha = opt;
         // Code base on https://gist.github.com/sstur/7379870
         if (typeof obj == 'string') {
             obj = JSON.parse(obj);
         }
         var node, nodeType = obj.nodeType;
+        //console.log("jsonToDom nodeType = "+ nodeType);
         switch (nodeType) {
             case 1: //ELEMENT_NODE
                 node = document.createElement(obj.tagName);
@@ -94,6 +98,15 @@ export default class WXmlParser{
                 for (var i = 0, len = attributes.length; i < len; i++) {
                     var attr = attributes[i];
                     node.setAttribute(attr[0], attr[1]);
+                    //console.log('set attr '+ attr[0]+ "->"+attr[1]);
+                    if(attr[0].startsWith("bind")){
+                        var e = attr[0].replace("bind","");
+                        if(e == "tap"){
+                            //console.log(opt);
+                            node.addEventListener("click",opt[attr[1]]);
+
+                        }
+                    }
                 }
                 break;
             case 3: //TEXT_NODE
@@ -117,7 +130,7 @@ export default class WXmlParser{
         if (nodeType == 1 || nodeType == 11) {
             var childNodes = obj.childNodes || [];
             for (i = 0, len = childNodes.length; i <  len; i++) {
-                node.appendChild(this.jsonToDom(childNodes[i]));
+                node.appendChild(this.jsonToDom(childNodes[i],opt));
             }
         }
         return node;

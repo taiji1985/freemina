@@ -7,7 +7,7 @@ export default  class App{
     constructor(opt){
         this.opt = opt;
         this.pageMap = [];
-
+        this.pageMap.len  = 0;
         this.addPage=this.addPage.bind(this);
         this.eventHandler=this.eventHandler.bind(this);
         this.render=this.render.bind(this);
@@ -23,12 +23,30 @@ export default  class App{
     }
 
     addPage(name,p){
-        if(this.pageMap.length==0){
+        console.log("page map len is "+this.pageMap.length);
+        if(this.pageMap.len==0){
             this.curPage = p;
         }
         p.setName(name);
 
         this.pageMap[name] = p;
+        this.pageMap.len ++;
+        console.log(this.pageMap);
+    }
+
+    /**
+     * 跳转到某个页面
+     * @param url
+     * @returns {boolean}
+     */
+    jumpTo(pagePath){
+        let p = this.pageMap[pagePath];
+        if(p){
+            this.curPage = p;
+            return true;
+        }
+
+        return false;
     }
 
     eventHandler(e){ //CustomEvent
@@ -44,7 +62,7 @@ export default  class App{
 
     render(){
         if(this.curPage){
-            curPage.render();
+            this.curPage.render();
         }
     }
 
